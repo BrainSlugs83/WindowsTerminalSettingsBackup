@@ -17,6 +17,8 @@
     Only applies visual theming - preserves existing terminal configuration.
 #>
 
+param([string]$OriginalUser)
+
 # Self-elevation check
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Host "Restarting script with administrator privileges..." -ForegroundColor Yellow
@@ -26,8 +28,6 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # Get the correct user profile path
-param([string]$OriginalUser)
-
 if ($OriginalUser) {
     $TargetUserProfile = "C:\Users\$OriginalUser"
     $TargetPowerShellProfile = "$TargetUserProfile\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
@@ -173,3 +173,5 @@ Write-Host "1. Close and reopen Windows Terminal" -ForegroundColor White
 Write-Host "2. Your custom theme should now be active!" -ForegroundColor White
 Write-Host ""
 Write-Host "If you see weird characters, make sure 'Hasklug Nerd Font Mono' is installed." -ForegroundColor Cyan
+Write-Host ""
+Read-Host "Press Enter to exit"
