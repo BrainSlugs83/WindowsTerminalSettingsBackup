@@ -62,12 +62,12 @@ if ($fontsInstalled) {
 # Create background image directory
 Write-Host ""
 Write-Host "[3/6] Copying background image..." -ForegroundColor Yellow
-$BackgroundDir = "$env:USERPROFILE\Pictures\Backgrounds-1080p"
+$BackgroundDir = "$env:USERPROFILE\Pictures\Backgrounds"
 if (!(Test-Path $BackgroundDir)) {
     New-Item -ItemType Directory -Path $BackgroundDir -Force | Out-Null
     Write-Host "   Created directory: $BackgroundDir" -ForegroundColor Green
 }
-Copy-Item "$BackupFolder\wallpaper-60247.jpg" "$BackgroundDir\wallpaper-60247.jpg" -Force
+Copy-Item "$BackupFolder\Console Background.png" "$BackgroundDir\Console Background.png" -Force
 Write-Host "   Background image copied successfully." -ForegroundColor Green
 
 # Restore Windows Terminal settings
@@ -99,7 +99,7 @@ if (Test-Path "$TerminalSettingsPath\settings.json") {
     }
     
     # Apply visual settings
-    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImage" -Value "C:\Users\$env:USERNAME\Pictures\Backgrounds-1080p\wallpaper-60247.jpg" -Force
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImage" -Value "C:\Users\$env:USERNAME\Pictures\Backgrounds\Console Background.png" -Force
     $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageAlignment" -Value "bottomRight" -Force
     $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageOpacity" -Value 0.67 -Force
     $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageStretchMode" -Value "uniform" -Force
