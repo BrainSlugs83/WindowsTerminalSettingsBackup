@@ -9,13 +9,14 @@
     1. Install oh-my-posh if not already installed
     2. Install the Hasklug Nerd Font automatically
     3. Copy the background image to Pictures folder
-    4. Restore Windows Terminal settings
+    4. Apply ONLY visual settings to Windows Terminal (preserves other config)
     5. Restore PowerShell profile
     6. Restore oh-my-posh custom theme
 
 .NOTES
     Run this script as Administrator.
     Requires winget and PowerShell 7.5+
+    Only applies visual theming - preserves existing terminal configuration.
 #>
 
 Write-Host "====================================" -ForegroundColor Cyan
@@ -71,7 +72,7 @@ Write-Host "   Background image copied successfully." -ForegroundColor Green
 
 # Restore Windows Terminal settings
 Write-Host ""
-Write-Host "[4/6] Restoring Windows Terminal settings..." -ForegroundColor Yellow
+Write-Host "[4/6] Applying Windows Terminal visual settings..." -ForegroundColor Yellow
 $TerminalSettingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 
 # Check if Windows Terminal is installed
@@ -81,14 +82,38 @@ if (!(Test-Path "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8b
     Start-Sleep -Seconds 2
 }
 
-if (Test-Path $TerminalSettingsPath) {
+if (Test-Path "$TerminalSettingsPath\settings.json") {
     # Backup existing settings
-    if (Test-Path "$TerminalSettingsPath\settings.json") {
-        Copy-Item "$TerminalSettingsPath\settings.json" "$TerminalSettingsPath\settings.json.backup" -Force
-        Write-Host "   Backed up existing settings to settings.json.backup" -ForegroundColor Cyan
+    Copy-Item "$TerminalSettingsPath\settings.json" "$TerminalSettingsPath\settings.json.backup" -Force
+    Write-Host "   Backed up existing settings to settings.json.backup" -ForegroundColor Cyan
+    
+    # Read existing settings
+    $existingSettings = Get-Content "$TerminalSettingsPath\settings.json" -Raw | ConvertFrom-Json
+    
+    # Apply only visual settings to profiles.defaults
+    if (!$existingSettings.profiles) {
+        $existingSettings | Add-Member -MemberType NoteProperty -Name "profiles" -Value @{}
     }
-    Copy-Item "$BackupFolder\settings.json" "$TerminalSettingsPath\settings.json" -Force
-    Write-Host "   Windows Terminal settings restored." -ForegroundColor Green
+    if (!$existingSettings.profiles.defaults) {
+        $existingSettings.profiles | Add-Member -MemberType NoteProperty -Name "defaults" -Value @{}
+    }
+    
+    # Apply visual settings
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImage" -Value "C:\Users\$env:USERNAME\Pictures\Backgrounds-1080p\wallpaper-60247.jpg" -Force
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageAlignment" -Value "bottomRight" -Force
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageOpacity" -Value 0.67 -Force
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageStretchMode" -Value "uniform" -Force
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "useAcrylic" -Value $true -Force
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "opacity" -Value 100 -Force
+    
+    if (!$existingSettings.profiles.defaults.font) {
+        $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "font" -Value @{}
+    }
+    $existingSettings.profiles.defaults.font | Add-Member -MemberType NoteProperty -Name "face" -Value "Hasklug Nerd Font Mono" -Force
+    
+    # Save updated settings
+    $existingSettings | ConvertTo-Json -Depth 100 | Set-Content "$TerminalSettingsPath\settings.json"
+    Write-Host "   Visual settings applied to Windows Terminal." -ForegroundColor Green
 } else {
     Write-Host "   ERROR: Could not locate Windows Terminal settings path." -ForegroundColor Red
 }
