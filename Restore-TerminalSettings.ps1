@@ -1,5 +1,3 @@
-#Requires -RunAsAdministrator
-
 <#
 .SYNOPSIS
     Restores custom Windows Terminal settings, PowerShell profile, oh-my-posh theme, and background image.
@@ -14,7 +12,7 @@
     6. Restore oh-my-posh custom theme
 
 .NOTES
-    Run this script as Administrator.
+    Script will automatically elevate to Administrator if needed.
     Requires winget and PowerShell 7.5+
     Only applies visual theming - preserves existing terminal configuration.
 #>
