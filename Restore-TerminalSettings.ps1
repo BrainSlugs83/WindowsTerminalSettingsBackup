@@ -19,6 +19,25 @@
     Only applies visual theming - preserves existing terminal configuration.
 #>
 
+# Self-elevation check
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "Restarting script with administrator privileges..." -ForegroundColor Yellow
+    $originalUser = $env:USERNAME
+    Start-Process pwsh -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -OriginalUser `"$originalUser`"" -Verb RunAs
+    exit
+}
+
+# Get the correct user profile path
+param([string]$OriginalUser)
+
+if ($OriginalUser) {
+    $TargetUserProfile = "C:\Users\$OriginalUser"
+    $TargetPowerShellProfile = "$TargetUserProfile\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+} else {
+    $TargetUserProfile = $env:USERPROFILE
+    $TargetPowerShellProfile = $PROFILE
+}
+
 Write-Host "====================================" -ForegroundColor Cyan
 Write-Host "Terminal Settings Restoration Script" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan
@@ -62,7 +81,7 @@ if ($fontsInstalled) {
 # Create background image directory
 Write-Host ""
 Write-Host "[3/6] Copying background image..." -ForegroundColor Yellow
-$BackgroundDir = "$env:USERPROFILE\Pictures\Backgrounds"
+$BackgroundDir = "$TargetUserProfile\Pictures\Backgrounds"
 if (!(Test-Path $BackgroundDir)) {
     New-Item -ItemType Directory -Path $BackgroundDir -Force | Out-Null
     Write-Host "   Created directory: $BackgroundDir" -ForegroundColor Green
@@ -73,10 +92,10 @@ Write-Host "   Background image copied successfully." -ForegroundColor Green
 # Restore Windows Terminal settings
 Write-Host ""
 Write-Host "[4/6] Applying Windows Terminal visual settings..." -ForegroundColor Yellow
-$TerminalSettingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
+$TerminalSettingsPath = "C:\Users\$(if($OriginalUser){$OriginalUser}else{$env:USERNAME})\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 
 # Check if Windows Terminal is installed
-if (!(Test-Path "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe")) {
+if (!(Test-Path (Split-Path $TerminalSettingsPath))) {
     Write-Host "   Windows Terminal not found. Installing via winget..." -ForegroundColor Yellow
     winget install Microsoft.WindowsTerminal --accept-source-agreements --accept-package-agreements
     Start-Sleep -Seconds 2
@@ -99,7 +118,8 @@ if (Test-Path "$TerminalSettingsPath\settings.json") {
     }
     
     # Apply visual settings
-    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImage" -Value "C:\Users\$env:USERNAME\Pictures\Backgrounds\Console Background.png" -Force
+    $bgPath = "C:\Users\$(if($OriginalUser){$OriginalUser}else{$env:USERNAME})\Pictures\Backgrounds\Console Background.png"
+    $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImage" -Value $bgPath -Force
     $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageAlignment" -Value "bottomRight" -Force
     $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageOpacity" -Value 0.67 -Force
     $existingSettings.profiles.defaults | Add-Member -MemberType NoteProperty -Name "backgroundImageStretchMode" -Value "uniform" -Force
@@ -121,22 +141,22 @@ if (Test-Path "$TerminalSettingsPath\settings.json") {
 # Restore PowerShell profile
 Write-Host ""
 Write-Host "[5/6] Restoring PowerShell profile..." -ForegroundColor Yellow
-$ProfileDir = Split-Path $PROFILE -Parent
+$ProfileDir = Split-Path $TargetPowerShellProfile -Parent
 if (!(Test-Path $ProfileDir)) {
     New-Item -ItemType Directory -Path $ProfileDir -Force | Out-Null
     Write-Host "   Created directory: $ProfileDir" -ForegroundColor Green
 }
-if (Test-Path $PROFILE) {
-    Copy-Item $PROFILE "$PROFILE.backup" -Force
-    Write-Host "   Backed up existing profile to $PROFILE.backup" -ForegroundColor Cyan
+if (Test-Path $TargetPowerShellProfile) {
+    Copy-Item $TargetPowerShellProfile "$TargetPowerShellProfile.backup" -Force
+    Write-Host "   Backed up existing profile to $TargetPowerShellProfile.backup" -ForegroundColor Cyan
 }
-Copy-Item "$BackupFolder\Microsoft.PowerShell_profile.ps1" $PROFILE -Force
+Copy-Item "$BackupFolder\Microsoft.PowerShell_profile.ps1" $TargetPowerShellProfile -Force
 Write-Host "   PowerShell profile restored." -ForegroundColor Green
 
 # Restore oh-my-posh theme
 Write-Host ""
 Write-Host "[6/6] Restoring oh-my-posh theme..." -ForegroundColor Yellow
-$ThemeDir = "$env:USERPROFILE\.config\oh-my-posh"
+$ThemeDir = "$TargetUserProfile\.config\oh-my-posh"
 if (!(Test-Path $ThemeDir)) {
     New-Item -ItemType Directory -Path $ThemeDir -Force | Out-Null
     Write-Host "   Created directory: $ThemeDir" -ForegroundColor Green
