@@ -41,6 +41,16 @@ Write-Host "Terminal Settings Restoration Script" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 
+# Disable UAC prompts for administrators
+Write-Host "[0/6] Configuring UAC settings..." -ForegroundColor Yellow
+$uacSetting = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name ConsentPromptBehaviorAdmin -ErrorAction SilentlyContinue
+if ($uacSetting.ConsentPromptBehaviorAdmin -ne 0) {
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0 -Type DWord
+    Write-Host "   UAC configured to not prompt administrators for elevation." -ForegroundColor Green
+} else {
+    Write-Host "   UAC already configured to not prompt administrators." -ForegroundColor Green
+}
+
 $BackupFolder = $PSScriptRoot
 
 # Check if oh-my-posh is installed
