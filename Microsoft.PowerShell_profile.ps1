@@ -1,0 +1,1 @@
+oh-my-posh init pwsh --config "$env:USERPROFILE\.config\oh-my-posh\capr4n.json" | iex

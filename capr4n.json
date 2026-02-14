@@ -1,0 +1,69 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "upgrade": {
+    "source": "cdn",
+    "interval": "168h",
+    "auto": false,
+    "notice": false
+  },
+  "console_title_template": "{{if .Root}} ⚡ {{end}}{{.UserName}} ➔ 📁{{.Folder}}",
+  "blocks": [
+    {
+      "type": "rprompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "template": " \ue641 {{ .CurrentDate | date .Format }} ",
+          "foreground": "#ffffff",
+          "background": "#003543",
+          "type": "time",
+          "style": "plain"
+        },
+        {
+          "options": {
+            "always_enabled": true
+          },
+          "template": " \ueba2 {{ .FormattedMs }} ",
+          "foreground": "#ffffff",
+          "background": "#83769c",
+          "type": "executiontime",
+          "style": "plain"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "options": {
+            "branch_icon": "⎇ ",
+            "fetch_status": true
+          },
+          "template": " {{ .HEAD }}{{if .Working.Changed}} \uf044 {{ .Working.String }}{{end}}{{if .Staging.Changed}} \uf046 {{ .Staging.String }}{{end}} ",
+          "foreground": "#193549",
+          "powerline_symbol": "\ue0b0",
+          "background": "#95ffa4",
+          "type": "git",
+          "style": "powerline"
+        },
+        {
+          "options": {
+            "folder_icon": "\uf115",
+            "folder_separator_icon": " \ue0b1 ",
+            "max_depth": 2,
+            "style": "agnoster_short"
+          },
+          "template": " {{ .Path }} ",
+          "foreground": "#ffffff",
+          "powerline_symbol": "\ue0b0",
+          "background": "#C678DD",
+          "type": "path",
+          "style": "powerline"
+        }
+      ]
+    }
+  ],
+  "version": 4,
+  "final_space": true
+}
