@@ -255,6 +255,13 @@ if ($Selection -band 2) {
     } else {
         Write-Host "   WARNING: OpenShell-Images folder not found." -ForegroundColor Yellow
     }
+
+    # Restart Explorer to activate Open Shell
+    Write-Host ""
+    Write-Host "Restarting Windows Explorer to activate Open Shell..." -ForegroundColor Yellow
+    Stop-Process -Name explorer -Force
+    Start-Sleep -Seconds 2
+    Write-Host "   Explorer restarted. Open Shell should now be active." -ForegroundColor Green
 }
 
 # ============================================
