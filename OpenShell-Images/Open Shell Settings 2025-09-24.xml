@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<Settings component="StartMenu" version="4.4.196">
+	<FoldersFirst value="0"/>
+	<OpenPrograms value="0"/>
+	<RecentPrograms value="None"/>
+	<EnableJumplists value="0"/>
+	<SkinW7 value="Windows Aero"/>
+	<SkinVariationW7 value=""/>
+	<SkinOptionsW7>
+		<Line>USER_IMAGE=0</Line>
+		<Line>SMALL_ICONS=0</Line>
+		<Line>LARGE_FONT=1</Line>
+		<Line>DISABLE_MASK=1</Line>
+		<Line>WHITE_SUBMENUS=1</Line>
+	</SkinOptionsW7>
+	<EnableStartButton value="1"/>
+	<StartButtonType value="CustomButton"/>
+	<StartButtonPath value="%SystemDrive%\Utils\Settings\Classic Shell\TrueOrb64.png"/>
+	<StartButtonSize value="48"/>
+	<StartButtonAlign value="0"/>
+	<SkipMetro value="1"/>
+	<OpenMouseMonitor value="1"/>
+	<MenuItems7>
+		<Line>Item1.Command=user_files</Line>
+		<Line>Item1.Settings=NOEXPAND</Line>
+		<Line>Item2.Command=separator</Line>
+		<Line>Item3.Command=user_documents</Line>
+		<Line>Item3.Settings=NOEXPAND</Line>
+		<Line>Item4.Command=downloads</Line>
+		<Line>Item4.Settings=NOEXPAND</Line>
+		<Line>Item5.Command=homegroup</Line>
+		<Line>Item5.Settings=ITEM_DISABLED</Line>
+		<Line>Item6.Command=games</Line>
+		<Line>Item6.Settings=TRACK_RECENT|NOEXPAND|ITEM_DISABLED</Line>
+		<Line>Item7.Command=favorites</Line>
+		<Line>Item7.Settings=ITEM_DISABLED</Line>
+		<Line>Item8.Command=recent_documents</Line>
+		<Line>Item8.Settings=ITEM_DISABLED</Line>
+		<Line>Item9.Command=network</Line>
+		<Line>Item9.Settings=ITEM_DISABLED</Line>
+		<Line>Item10.Command=network_connections</Line>
+		<Line>Item10.Settings=ITEM_DISABLED</Line>
+		<Line>Item11.Command=separator</Line>
+		<Line>Item12.Command=computer</Line>
+		<Line>Item12.Settings=NOEXPAND</Line>
+		<Line>Item13.Command=apps</Line>
+		<Line>Item13.Settings=ITEM_DISABLED</Line>
+		<Line>Item14.Command=separator</Line>
+		<Line>Item15.Command=pc_settings</Line>
+		<Line>Item15.Settings=TRACK_RECENT|ITEM_DISABLED</Line>
+		<Line>Item16.Command=control_panel</Line>
+		<Line>Item16.Settings=TRACK_RECENT</Line>
+		<Line>Item17.Command=admin</Line>
+		<Line>Item17.Settings=TRACK_RECENT</Line>
+		<Line>Item18.Command=devices</Line>
+		<Line>Item18.Settings=NOEXPAND</Line>
+		<Line>Item19.Command=defaults</Line>
+		<Line>Item20.Command=help</Line>
+		<Line>Item20.Settings=ITEM_DISABLED</Line>
+		<Line>Item21.Command=separator</Line>
+		<Line>Item22.Command=run</Line>
+	</MenuItems7>
+	<EnableExit value="0"/>
+</Settings>
