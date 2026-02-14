@@ -129,6 +129,9 @@ if (Test-Path "$TerminalSettingsPath\settings.json") {
     }
     $existingSettings.profiles.defaults.font | Add-Member -MemberType NoteProperty -Name "face" -Value "Hasklug Nerd Font Mono" -Force
     
+    # Set theme to follow system (dark/light mode)
+    $existingSettings | Add-Member -MemberType NoteProperty -Name "theme" -Value "system" -Force
+    
     # Save updated settings
     $existingSettings | ConvertTo-Json -Depth 100 | Set-Content "$TerminalSettingsPath\settings.json"
     Write-Host "   Visual settings applied to Windows Terminal." -ForegroundColor Green
