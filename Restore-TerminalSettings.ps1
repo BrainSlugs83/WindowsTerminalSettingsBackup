@@ -250,8 +250,24 @@ if ($Selection -band 2) {
         
         # Update registry to point to new image location
         $newImagePath = "$ImagesDest\TrueOrb64.png"
-        Set-ItemProperty -Path "HKCU:\Software\OpenShell\StartMenu\Settings" -Name "StartButtonPath" -Value $newImagePath -ErrorAction SilentlyContinue
-        Write-Host "   Updated start button path to $newImagePath" -ForegroundColor Green
+        
+        # Wait a moment for registry import to complete
+        Start-Sleep -Milliseconds 500
+        
+        # Verify the registry key exists before trying to update it
+        if (Test-Path "HKCU:\Software\OpenShell\StartMenu\Settings") {
+            Set-ItemProperty -Path "HKCU:\Software\OpenShell\StartMenu\Settings" -Name "StartButtonPath" -Value $newImagePath -Force
+            
+            # Verify the update worked
+            $verifyPath = Get-ItemProperty -Path "HKCU:\Software\OpenShell\StartMenu\Settings" -Name "StartButtonPath" -ErrorAction SilentlyContinue
+            if ($verifyPath.StartButtonPath -eq $newImagePath) {
+                Write-Host "   Updated start button path to $newImagePath" -ForegroundColor Green
+            } else {
+                Write-Host "   WARNING: Failed to update start button path. Current value: $($verifyPath.StartButtonPath)" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "   WARNING: Open Shell registry settings not found. Start button path not updated." -ForegroundColor Yellow
+        }
     } else {
         Write-Host "   WARNING: OpenShell-Images folder not found." -ForegroundColor Yellow
     }
