@@ -6,7 +6,7 @@
     "auto": false,
     "notice": false
   },
-  "console_title_template": "{{if .Root}} ⚡ {{end}}{{.UserName}} ➔ 📁{{.Folder}}",
+  "console_title_template": "{{if .Root}} ⚡ {{end}}{{.UserName}} ➔ 📁 {{.Folder}}",
   "blocks": [
     {
       "type": "rprompt",
@@ -48,6 +48,18 @@
           "style": "powerline"
         },
         {
+          "type": "python",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "#193549",
+          "background": "#9E7863",
+          "template": " 🐍 {{ if .Venv }}{{ .Venv }}{{ end }} ",
+          "properties": {
+            "fetch_virtual_env": true,
+            "display_default": false
+          }
+        },
+        {
           "options": {
             "folder_icon": "\uf115",
             "folder_separator_icon": " \ue0b1 ",
@@ -56,7 +68,7 @@
           },
           "template": " {{ .Path }} ",
           "foreground": "#ffffff",
-          "powerline_symbol": "\ue0b0",
+          "powerline_symbol": "\ue0b0 ",
           "background": "#C678DD",
           "type": "path",
           "style": "powerline"
